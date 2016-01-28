@@ -13,8 +13,9 @@ add_signif(df, FUN = wilcox.test)
 By default wilcox.test is used, t.test can be used also}
 }
 \value{
-data.frame with added two columns: p.value with numerical value and
-sign with string representation of p.value (*** < 0.001, ** < 0.01, * < 0.05)
+data.frame with added two columns names pvalue and ptext:
+with numerical p.value and with string representation of p.value
+(*** < 0.001, ** < 0.01, * < 0.05)
 }
 \description{
 Add statistical significance to fragments contributions

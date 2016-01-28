@@ -4,12 +4,14 @@
 \alias{filter_by_prop_names}
 \title{Keep only properties which are specified}
 \usage{
-filter_by_prop_names(df, keep_prop_names)
+filter_by_prop_names(df, keep_prop_names = NULL, remove_prop_names = NULL)
 }
 \arguments{
 \item{df}{input data.frame.}
 
 \item{keep_prop_names}{character vector of models names}
+
+\item{remove_prop_names}{character vector of models names}
 }
 \value{
 data.frame.
@@ -23,6 +25,7 @@ The input data.frame has to contain \code{Property} column.
 \examples{
 file_name <- system.file("extdata", "free-wilson_frag_contributions.txt", package = "rspci")
 df <- load_data(file_name)
-df <- filter_by_prop_names(df, c("svm", "pls", "rf"))
+df1 <- filter_by_prop_names(df, "overall")
+df2 <- filter_by_prop_names(df, remove_prop_names = c("overall", "dispersive"))
 }
 

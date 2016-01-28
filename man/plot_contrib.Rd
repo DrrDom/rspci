@@ -17,7 +17,7 @@ plot_contrib(df, frag_name_col = "full_name", contrib_col = "Contribution",
 
 \item{plot_type}{maybe \code{"boxplot"} or \code{"barplot"}}
 
-\item{FUN}{aggragate function used in barplot}
+\item{FUN}{aggragate function used in barplot (should return named list of outputs with numeric p.value item)}
 
 \item{show_sign_text}{column name of text represented significance (usually number of asterisks). If \code{NULL} no text will be plot.}
 

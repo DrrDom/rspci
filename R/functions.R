@@ -11,7 +11,7 @@
 load_data <- function(file_name, sep = "###") {
   # init contribution names for further replacement
   contrib_names <- c("overall", "hydrophobic", "electrostatic", "hydrogen bonding", "dispersive")
-  names(contrib_names) <- c("overall", "logp", "charge", "hb", "refractivity")
+  names(contrib_names) <- c("overall", "LOGP", "CHARGE", "HB", "REFRACTIVITY")
   # load data
   df <- as.data.frame(data.table::fread(file_name, sep = "\t", header = T, na.strings = "", autostart = 3))
   rnames <- colnames(df)[-1]
@@ -98,15 +98,23 @@ filter_by_model_names <- function(df, keep_model_names) {
 #'
 #' @param df input data.frame.
 #' @param keep_prop_names character vector of models names
+#' @param remove_prop_names character vector of models names
 #' @return data.frame.
 #' @details The input data.frame has to contain \code{Property} column.
 #' @export
 #' @examples
 #' file_name <- system.file("extdata", "free-wilson_frag_contributions.txt", package = "rspci")
 #' df <- load_data(file_name)
-#' df <- filter_by_prop_names(df, c("svm", "pls", "rf"))
-filter_by_prop_names <- function(df, keep_prop_names) {
-  df[df$Property %in% keep_prop_names, ]
+#' df1 <- filter_by_prop_names(df, "overall")
+#' df2 <- filter_by_prop_names(df, remove_prop_names = c("overall", "dispersive"))
+filter_by_prop_names <- function(df, keep_prop_names = NULL, remove_prop_names = NULL) {
+  if (!is.null(keep_prop_names)) {
+    df <- df[df$Property %in% keep_prop_names, ]
+  }
+  if (!is.null(remove_prop_names)) {
+    df <- df[!(df$Property %in% remove_prop_names), ]
+  }
+  return(df)
 }
 
 
@@ -125,7 +133,7 @@ filter_by_prop_names <- function(df, keep_prop_names) {
 #' file_name <- system.file("extdata", "free-wilson_frag_contributions.txt", package = "rspci")
 #' df <- load_data(file_name)
 #' df <- reorder_data(df, frag_col_name = "FragID")
-reorder_data <- function(df, by_model, by_prop, FUN=median, frag_col_name = "full_name") {
+reorder_data <- function(df, by_model, by_prop, FUN = median, frag_col_name = "full_name") {
   sorted_levels <- eval(substitute(
     df[df$Model == by_model & df$Property == by_prop, ] %>%
       dplyr::group_by(frag) %>%
@@ -144,8 +152,9 @@ reorder_data <- function(df, by_model, by_prop, FUN=median, frag_col_name = "ful
 #' @param df input data.frame.
 #' @param FUN function which returns p.value within the list of named values.
 #' By default wilcox.test is used, t.test can be used also
-#' @return data.frame with added two columns: p.value with numerical value and
-#' sign with string representation of p.value (*** < 0.001, ** < 0.01, * < 0.05)
+#' @return data.frame with added two columns names pvalue and ptext:
+#' with numerical p.value and with string representation of p.value
+#' (*** < 0.001, ** < 0.01, * < 0.05)
 #' @export
 #' @examples
 #' file_name <- system.file("extdata", "free-wilson_frag_contributions.txt", package = "rspci")
@@ -169,7 +178,7 @@ add_signif <- function(df, FUN = wilcox.test) {
 #' @param frag_name_col name of a column with fragments names to plot
 #' @param contrib_col name of a column with fragments contribution values
 #' @param plot_type maybe \code{"boxplot"} or \code{"barplot"}
-#' @param FUN aggragate function used in barplot
+#' @param FUN aggragate function used in barplot (should return named list of outputs with numeric p.value item)
 #' @param show_sign_text column name of text represented significance (usually number of asterisks). If \code{NULL} no text will be plot.
 #' @param show_sep_lines boolean to control of showing grey lines to separate different fragments on a plot
 #' @param flip boolean to control the orientation of a plot
@@ -204,7 +213,7 @@ plot_contrib <- function(df, frag_name_col = "full_name", contrib_col = "Contrib
       if (length(unique(df$Property)) > 1) {
         g <- g + stat_summary(fun.y = FUN, geom = "bar", position = "dodge", aes(fill = Property))
       } else {
-        g <- g + stat_summary(fun.y = FUN, geom = "bar", position = "dodge")
+        g <- g + stat_summary(fun.y = FUN, geom = "bar", position = "dodge", fill = "darkgrey")
       }
     } else {
       if (plot_type == "boxplot") {
@@ -218,26 +227,48 @@ plot_contrib <- function(df, frag_name_col = "full_name", contrib_col = "Contrib
 
     # add significance text
     if (!is.null(show_sign_text)) {
-      if (plot_type == "barplot") {
-        if (flip) {
-          g <- g + stat_summary(fun.y = FUN, geom = "text", position = position_dodge(width = 0.9),
-                                aes_string(group = "Property", label = show_sign_text))
-        } else {
-          g <- g + stat_summary(fun.y = FUN, geom = "text", position = position_dodge(width = 0.9),
-                                aes_string(group = "Property", label = show_sign_text))
-        }
+      if ((!flip & length(unique(df$Property)) > 1) | (flip & length(unique(df$Property)) == 1)) {
+        angle <- 90
       } else {
-        if (plot_type == "boxplot") {
-          if (flip) {
-            g <- g + geom_text(aes_string(group = "Property", label = show_sign_text, y = max(df[, contrib_col])),
-                               position = position_dodge(width = 0.9), angle = 90)
-          } else {
-            g <- g + geom_text(aes_string(group = "Property", label = show_sign_text, y = max(df[, contrib_col])),
-                               position = position_dodge(width = 0.9))
-          }
-        }
+        angle <- 0
+      }
+      if (plot_type == "barplot") {
+        g <- g + stat_summary(fun.y = FUN, geom = "text", position = position_dodge(width = 0.9), angle = angle,
+                              aes_string(group = "Property", label = show_sign_text))
+      }
+      if (plot_type == "boxplot") {
+        g <- g + geom_text(aes_string(group = "Property", label = show_sign_text, y = max(df[, contrib_col])),
+                           position = position_dodge(width = 0.9), angle = angle)
       }
     }
+#
+#         if (flip) {
+#           g <- g + stat_summary(fun.y = FUN, geom = "text", position = position_dodge(width = 0.9), angle = 90,
+#                                 aes_string(group = "Property", label = show_sign_text))
+#         } else {
+#           g <- g + stat_summary(fun.y = FUN, geom = "text", position = position_dodge(width = 0.9),
+#                                 aes_string(group = "Property", label = show_sign_text))
+#         }
+#       } else {
+#         if (plot_type == "boxplot") {
+#           if ((!flip & length(df$Property) > 1) | (flip & length(df$Property) == 1)) {
+#             angle <- 90
+#           } else {
+#             angle <- 0
+#           }
+#           g <- g + geom_text(aes_string(group = "Property", label = show_sign_text, y = max(df[, contrib_col])),
+#                              position = position_dodge(width = 0.9), angle = angle)
+
+#           if (flip) {
+#             g <- g + geom_text(aes_string(group = "Property", label = show_sign_text, y = max(df[, contrib_col])),
+#                                position = position_dodge(width = 0.9), angle = 90)
+#           } else {
+#             g <- g + geom_text(aes_string(group = "Property", label = show_sign_text, y = max(df[, contrib_col])),
+#                                position = position_dodge(width = 0.9))
+#           }
+#         }
+#       }
+#     }
 
     # add grid lines for separation of different fragments
     if (show_sep_lines) {

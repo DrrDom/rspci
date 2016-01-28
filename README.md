@@ -2,7 +2,7 @@ SPCI software calculates fragments contributions to an investigated property by 
 
 # Help
 
-###### Load package prepare data before visualization
+#### Load package prepare data before visualization
 ```
 library(rspci)
 ```
@@ -33,7 +33,7 @@ add significance levels to data
 d <- add_signif(d)
 ```
 
-###### VISUALIZATION of OVERALL CONTRIBUTIONS
+#### Visualization of overall contributions
 keep only overall contributions for visualization
 ```
 d1 <- filter_by_prop_names(d, "overall")
@@ -56,7 +56,7 @@ barpplot with significance levels
 plot_contrib(d1, plot_type = "barplot", show_sign_text = "ptext")
 ```
 
-###### VISUALIZATION of PHYSICO_CHEMICAL CONTRIBUTIONS
+#### Visualization of physico-chemical contributions
 keep only physico-chemical contributions
 ```
 d2 <- filter_by_prop_names(d, remove_prop_names = "overall")

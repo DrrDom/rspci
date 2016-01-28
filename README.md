@@ -2,12 +2,12 @@ SPCI software calculates fragments contributions to an investigated property by 
 
 # Help
 
-#### Load package prepare data before visualization
+#### Load package and prepare data before visualization
 ```
 library(rspci)
 ```
 
-load text file with contributions
+load text file with contributions (normally this file is located in a dir of modeled property and names default_frag_contributions.txt or auto_frag_contributions.txt, etc)
 ```
 file_name <- system.file("extdata", "BBB_frag_contributions.txt", package = "rspci")
 d <- load_data(file_name)
@@ -33,6 +33,7 @@ add significance levels to data
 d <- add_signif(d)
 ```
 
+
 #### Visualization of overall contributions
 keep only overall contributions for visualization
 ```
@@ -56,6 +57,7 @@ barpplot with significance levels
 plot_contrib(d1, plot_type = "barplot", show_sign_text = "ptext")
 ```
 
+
 #### Visualization of physico-chemical contributions
 keep only physico-chemical contributions
 ```
@@ -73,7 +75,4 @@ not fliped barplot with siginificance levels
 ```
 plot_contrib(d2, plot_type = "barplot", flip = FALSE, show_sign_text = "ptext")
 ```
-boxplot with siginificance levels
-```
-plot_contrib(d2, show_sign_text = "ptext")
-```
+

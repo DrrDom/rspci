@@ -44,6 +44,29 @@ load_data <- function(file_name, sep = "###") {
 
 
 
+#' Read and preprocess data about fragments contributions from a text file created with spci-ext Python scripts
+#'
+#' @param file_name name of the input text file with fragments contributions.
+#' @param sep separator between molecule and fragment names. Default is ###.
+#' @return data.frame in long format
+#' @details An input file doesn't have a header and consists of two columns with names and values
+#' @export
+#' @examples
+#' df <- load_data_ext(file_name)
+load_data_ext <- function(file_name, sep = "###") {
+  df <- as.data.frame(data.table::fread(file_name, sep = "\t", header = F, na.strings = "", autostart = 3))
+  n <- as.data.frame(do.call(rbind, strsplit(df[, 1], sep)), stringsAsFactors = FALSE)
+  colnames(n) <- c("MolID", "FragID")
+  # count occurencies
+  nm <- n %>%
+    dplyr::group_by(FragID) %>%
+    dplyr::summarise(M = length(unique(MolID)), N = length(MolID))
+  df <- cbind(n, nm[match(n$FragID, nm$FragID), -1], Model = sub("\\..*$", "", basename(file_name)), Property = "overall", Contribution = df[, 2])
+  return(df)
+}
+
+
+
 #' Add full fragments names as the first column to the existed data.frame
 #'
 #' @param df data.frame load with load_data function.

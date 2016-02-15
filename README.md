@@ -1,6 +1,6 @@
 SPCI software calculates fragments contributions to an investigated property by means of interpretation of QSAR models. This package helps to analyze and visualize contributions.
 
-# Help
+# How to use
 
 #### Load package and prepare data before visualization
 ```

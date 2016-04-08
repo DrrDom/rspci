@@ -33,7 +33,10 @@ load_data <- function(file_name, sep = "###") {
               df$value)
   colnames(df)[5:7] <- c("Model", "Property", "Contribution")
   df[, c("Model", "Property")] <- sapply(df[, c("Model", "Property")], as.character)
-  df[, "Property"] <- contrib_names[df[, "Property"]]
+  # replace known descriptor property names
+  v <- contrib_names[df[, "Property"]]
+  v[is.na(v)] <- df[is.na(v), "Property"]
+  df[, "Property"] <- v
   # add average consensus
   avg <- df %>%
     dplyr::group_by(MolID, FragID, M, N, Property) %>%

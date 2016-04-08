@@ -76,3 +76,18 @@ not fliped barplot with siginificance levels
 plot_contrib(d2, plot_type = "barplot", flip = FALSE, show_sign_text = "ptext")
 ```
 
+
+#### Create summary table
+These commands return summary table of the consensus model sorted by median overall contributions of the fragments
+```
+library(dplyr)  # to use %>% function
+
+d <- add_full_names(d)  # required, as full_name column will be used for grouping
+d <- filter_by_frags_count(d)  # optional, to remove rarely occured fragments
+
+df <- d %>%
+  filter(Property == "overall", Model == "consensus") %>%
+  group_by(full_name) %>%
+  summarise(median = median(Contribution)) %>%
+  arrange(desc(median))
+```

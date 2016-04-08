@@ -4,12 +4,16 @@
 \alias{load_data}
 \title{Read and preprocess data about fragments contributions from a text file}
 \usage{
-load_data(file_name, sep = "###")
+load_data(file_name, sep = "###", keep_models = NULL)
 }
 \arguments{
 \item{file_name}{name of the input text file with fragments contributions.}
 
 \item{sep}{separator between molecule and fragment names. Default is ###.}
+
+\item{keep_model}{character vector with model names to keep. Only for those
+models, if their number is more than one, consensus (average) contributions
+will be calculated.}
 }
 \value{
 melted data.frame with added consensus (average) contributions

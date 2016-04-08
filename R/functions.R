@@ -2,13 +2,16 @@
 #'
 #' @param file_name name of the input text file with fragments contributions.
 #' @param sep separator between molecule and fragment names. Default is ###.
+#' @param keep_model character vector with model names to keep. Only for those
+#' models, if their number is more than one, consensus (average) contributions
+#' will be calculated.
 #' @return melted data.frame with added consensus (average) contributions
 #' @details An input file of an old format had '#' as a separator.
 #' @export
 #' @examples
 #' file_name <- system.file("extdata", "free-wilson_frag_contributions.txt", package = "rspci")
 #' df <- load_data(file_name)
-load_data <- function(file_name, sep = "###") {
+load_data <- function(file_name, sep = "###", keep_models = NULL) {
   # init contribution names for further replacement
   contrib_names <- c("overall", "hydrophobic", "electrostatic", "hydrogen bonding", "dispersive")
   names(contrib_names) <- c("overall", "LOGP", "CHARGE", "HB", "REFRACTIVITY")
@@ -37,11 +40,17 @@ load_data <- function(file_name, sep = "###") {
   v <- contrib_names[df[, "Property"]]
   v[is.na(v)] <- df[is.na(v), "Property"]
   df[, "Property"] <- v
+  # keep only selected models
+  if (!is.null(keep_models)) {
+    df <- df %>% dplyr::filter(Model %in% keep_models)
+  }
   # add average consensus
-  avg <- df %>%
-    dplyr::group_by(MolID, FragID, M, N, Property) %>%
-    dplyr::summarise(Contribution = mean(Contribution))
-  df <- dplyr::bind_rows(df, data.frame(avg[, 1:4], Model = "consensus", avg[, 5:6]))
+  if (length(unique(df$Model)) > 1) {
+    avg <- df %>%
+      dplyr::group_by(MolID, FragID, M, N, Property) %>%
+      dplyr::summarise(Contribution = mean(Contribution))
+    df <- dplyr::bind_rows(df, data.frame(avg[, 1:4], Model = "consensus", avg[, 5:6]))
+  }
   return(df)
 }
 

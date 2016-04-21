@@ -1,5 +1,17 @@
 SPCI software calculates fragments contributions to an investigated property by means of interpretation of QSAR models. This package helps to analyze and visualize contributions.
 
+# How to install
+
+First install `devtools` package
+```
+instal.packages("devtools")
+```
+Then run from the R console
+```
+devtools::install_github("DrrDom/rspci")
+```
+Use the same command to update the package if necessary.
+
 # How to use
 
 #### Load package and prepare data before visualization

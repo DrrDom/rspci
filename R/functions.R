@@ -46,10 +46,10 @@ load_data <- function(file_name, sep = "###", keep_models = NULL) {
   }
   # add average consensus
   if (length(unique(df$Model)) > 1) {
-    avg <- df %>%
-      dplyr::group_by(MolID, FragID, M, N, Property) %>%
-      dplyr::summarise(Contribution = mean(Contribution))
-    df <- dplyr::bind_rows(df, data.frame(avg[, 1:4], Model = "consensus", avg[, 5:6]))
+    cons_df <- split(df, df$Model)[[1]]
+    cons_df$Model <- "consensus"
+    cons_df$Contribution <- rowMeans(sapply(split(df, df$Model), "[[", 7))
+    df <- dplyr::bind_rows(df, cons_df)
   }
   return(df)
 }

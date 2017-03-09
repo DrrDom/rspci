@@ -404,3 +404,24 @@ get_mol_ids <- function(model, uncert = 1) {
            unique)
   } else {NULL}
 }
+
+
+#' Builds mclust models (gaussian mixture models) for all (if possible, see details) fragments present in input data
+#' @param data  input  data.frame
+#' @return list containing mclust models for fragments contained in data.frame; each list element is named like a corresponding fragment
+#' @details If a data.frame  contains fragments  occuring  either in exactly one molecule  once or in exactly one molecule more than once with equal contributions,  then for such fragments mixture models will not be built (due to lack of data).Nothing will be returned for them.
+#' @export
+#' @examples
+#' ' file_name <- system.file("extdata", "BBB_frag_contributions.txt", package = "rspci")
+#' df <- load_data(file_name)
+#' df <- filter(df, Model == "consensus", Property == "overall")
+#' models <- clust_all(df)
+clust_all <- function(data) {
+  m <- lapply(split(data, data$FragID), function(df) {
+    if (nrow(unique(df)) > 1) {
+      clust(df$Contribution, df$MolID)
+    }
+  })
+}
+
+

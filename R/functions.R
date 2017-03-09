@@ -422,7 +422,9 @@ clust_all <- function(data) {
       clust(df$Contribution, df$MolID)
     }
   })
-}
+m <- m[sapply(m,!is.null)]
+  }
+
 
 #' Gives the number of clusters mclust gaussian mixture model  contains
 #' @param model mclust model object
@@ -438,4 +440,19 @@ clust_all <- function(data) {
 get_num_clust <- function(model) {
   length(unique(model$classification))
 }
+
+#' Visualize mclust model: plot the histogram of input data, dashed line: kernel density estimate and solid colored lines: gaussians corresponding to clusters found by model
+#' @param model Mclust gaussian mixture model
+#' @param  main Title for plot
+#' @param bin
+#' @return Plot with the histogram of input data & kernal density esitmate (dashed) & gaussians obtained with a model (solid)
+#' @export
+#' @examples
+#' ' file_name <- system.file("extdata", "BBB_frag_contributions.txt", package = "rspci")
+#' df <- load_data(file_name)
+#' dx <- filter(df, FragID == "OH (aliphatic)", Model == "consensus", Property == "overall")
+#' m <- clust(dx$Contribution, dx$MolID)
+#' plot_mclust(m)
+
+
 

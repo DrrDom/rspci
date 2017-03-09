@@ -371,3 +371,17 @@ clust <- function(data, molids = NULL) {
   icl <- mclustICL(data, modelNames = "V")
   m <- Mclust(data, G = which.max(icl), modelNames = "V")
 }
+#' shows statistical parrameters of mclust model: mean and variance and proportion for each gaussian (cluster)
+#' @param model mclust model object
+#' @return dataframe with  mean, variance & proportion for each gaussian (cluster)
+#' @export
+#' @examples
+#' file_name <- system.file("extdata", "BBB_frag_contributions.txt", package = "rspci")
+#' df <- load_data(file_name)
+#' dx <- filter(df, FragID == "OH (aliphatic)", Model == "consensus", Property == "overall")
+#' m <- clust(dx$Contribution, dx$MolID)
+#' par <- get.params(m)
+
+get_params <- function(model) {
+  data.frame("mean" = model$parameters$mean, "variance" = model$parameters$variance$sigmasq, "proportion"=model$parameters$pro, row.names = unique(model$classification))
+}

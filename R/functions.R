@@ -422,7 +422,7 @@ clust_all <- function(data) {
       clust(df$Contribution, df$MolID)
     }
   })
-m <- m[sapply(m,!is.null)]
+m <- m[!sapply(m,is.null)]
   }
 
 
@@ -444,7 +444,7 @@ get_num_clust <- function(model) {
 #' Visualize mclust model: plot the histogram of input data, dashed line: kernel density estimate and solid colored lines: gaussians corresponding to clusters found by model
 #' @param model Mclust gaussian mixture model
 #' @param  main Title for plot
-#' @param bin
+#' @param bin Bin for histogram, distance between nearest breakpoints
 #' @return Plot with the histogram of input data & kernal density esitmate (dashed) & gaussians obtained with a model (solid)
 #' @export
 #' @examples
@@ -454,5 +454,52 @@ get_num_clust <- function(model) {
 #' m <- clust(dx$Contribution, dx$MolID)
 #' plot_mclust(m)
 
+plot_mclust <- function(model, main = NULL, bin = 0.1) {
 
+  breaks <- function(s, binwidth = bin) {
+    seq(min(s), max(s) + binwidth, binwidth)
+  }
+
+  m <- model
+  k <- m$G
+  x <- sort(m$data[,1])
+  a <- hist(x, plot = FALSE)
+  col2 <- 2:(k + 1)
+  hist(x, breaks = breaks, prob = TRUE, main = main, xlab = "Values")
+  for (i in 1:k) {
+    xx <- seq(min(x), max(x), length.out = 100)
+    lines(xx, m$parameters$pro[i] * dnorm(xx,
+                                          mean = m$parameters$mean[i],
+                                          sd = sqrt(m$parameters$variance$sigmasq[i])),
+          col = col2[i], lwd = 2)
+  }
+
+  lines(density(x), lty = 2, lwd = 2)
+}
+
+
+#' Save plots of all built mclust models to one png file
+#' @param filename File name to save plots
+#' @param models List of mclust models for which plots will be saved
+#' @export
+#' @examples
+#' #' ' file_name <- system.file("extdata", "BBB_frag_contributions.txt", package = "rspci")
+#' df <- load_data(file_name)
+#' df <- filter(df, Model == "consensus", Property == "overall")
+#' models <- clust_all(df)
+#' save_mclust_plots("models.png", models)
+
+
+save_mclust_plots<- function(filename, models) {
+  frnames <- names(models)
+  ncols <- min(length(frnames), 3)
+  nrows <- ceiling(length(frnames)/3)
+  png(filename, res = 300, height = 1000 * nrows, width = ncols * 1200)
+  par(mfrow = c(nrows, ncols))
+  par(mar = c(2,2,2,2))
+  for (n in frnames) {
+    plot_mclust(models[[n]], n)
+  }
+  dev.off()
+}
 

@@ -350,3 +350,24 @@ plot_contrib <- function(df, frag_name_col = "full_name", contrib_col = "Contrib
   }, finally = {if (!loaded) detach(package:ggplot2)})
 
 }
+
+
+
+#' Clustering fragment contributions
+#'
+#' @param data vector of fragment contributions.
+#' @param molids vector of molecule IDs corresponding to fragment contributions
+#' @return Mclust model object
+#' @export
+#' @examples
+#' file_name <- system.file("extdata", "BBB_frag_contributions.txt", package = "rspci")
+#' df <- load_data(file_name)
+#' dx <- filter(df, FragID == "OH (aliphatic)", Model == "consensus", Property == "overall")
+#' m <- clust(dx$Contribution, dx$MolID)
+clust <- function(data, molids = NULL) {
+  if (!is.null(molids)) {
+    names(data) <- molids
+  }
+  icl <- mclustICL(data, modelNames = "V")
+  m <- Mclust(data, G = which.max(icl), modelNames = "V")
+}

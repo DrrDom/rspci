@@ -385,3 +385,22 @@ clust <- function(data, molids = NULL) {
 get_clust_params <- function(model) {
   data.frame("mean" = model$parameters$mean, "variance" = model$parameters$variance$sigmasq, "proportion"=model$parameters$pro, row.names = unique(model$classification))
 }
+
+#' Shows IDs of molecules for each cluster separately
+#' @param model mclust model
+#' @param uncert numeric value, the maximum level of uncertainty for molecules to belong to either cluster. Molecules with uncertaintiy higher then this threshold   will not appear in the resulting list
+#' @return list of vectors containing MolIDs of molecules belonging to each cluster  (as many vectors as many clusters are in the model; elements of list are named according to clusters)
+#' @export
+#' @examples
+#' ' file_name <- system.file("extdata", "BBB_frag_contributions.txt", package = "rspci")
+#' df <- load_data(file_name)
+#' dx <- filter(df, FragID == "OH (aliphatic)", Model == "consensus", Property == "overall")
+#' m <- clust(dx$Contribution, dx$MolID)
+#' get_mol_ids(m, uncert = 0.2)
+get_mol_ids <- function(model, uncert = 1) {
+  if (!is.null(rownames(model$data))) {
+    lapply(split(rownames(model$data)[model$uncertainty <= uncert],
+                 model$classification[model$uncertainty <= uncert]),
+           unique)
+  } else {NULL}
+}

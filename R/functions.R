@@ -424,4 +424,18 @@ clust_all <- function(data) {
   })
 }
 
+#' Gives the number of clusters mclust gaussian mixture model  contains
+#' @param model mclust model object
+#' @return  integer value: number of clusters (gaussians)
+#' @export
+#' @examples
+#' #' ' file_name <- system.file("extdata", "BBB_frag_contributions.txt", package = "rspci")
+#' df <- load_data(file_name)
+#' dx <- filter(df, FragID == "OH (aliphatic)", Model == "consensus", Property == "overall")
+#' m <- clust(dx$Contribution, dx$MolID)
+#' num <- get_num_clust(m)
+#'
+get_num_clust <- function(model) {
+  length(unique(model$classification))
+}
 

@@ -382,6 +382,6 @@ clust <- function(data, molids = NULL) {
 #' m <- clust(dx$Contribution, dx$MolID)
 #' par <- get.params(m)
 
-get_params <- function(model) {
+get_clust_params <- function(model) {
   data.frame("mean" = model$parameters$mean, "variance" = model$parameters$variance$sigmasq, "proportion"=model$parameters$pro, row.names = unique(model$classification))
 }

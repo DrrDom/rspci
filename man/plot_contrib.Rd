@@ -25,7 +25,7 @@ plot_contrib(df, frag_name_col = "full_name", contrib_col = "Contribution",
 
 \item{flip}{boolean to control the orientation of a plot}
 
-\item{x.labels.angle}{rorate axis x text labels. It works only if \code{flip} was set to TRUE.}
+\item{x_labels_angle}{rorate axis x text labels. It works only if \code{flip} was set to TRUE.}
 }
 \value{
 ggplot object which can be further modified before printing
@@ -36,6 +36,7 @@ Plot fragments contributions
 \examples{
 file_name <- system.file("extdata", "free-wilson_frag_contributions.txt", package = "rspci")
 df <- load_data(file_name)
+df <- add_full_names(df)
 df <- reorder_data(df, "consensus", "overall")
 df <- add_signif(df)
 plot_contrib(df)

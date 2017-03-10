@@ -2,20 +2,29 @@
 % Please edit documentation in R/functions.R
 \name{plot_mclust}
 \alias{plot_mclust}
-\title{Visualize mclust model: plot the histogram of input data, dashed line: kernel density estimate and solid colored lines: gaussians corresponding to clusters found by model}
+\title{Plot mclust model}
 \usage{
-plot_mclust(model, main = NULL, bin = 0.1)
+plot_mclust(model, main = NULL, binwidth = 0.1)
 }
 \arguments{
-\item{model}{Mclust gaussian mixture model}
+\item{model}{mclust model object}
 
-\item{main}{Title for plot}
+\item{main}{plot title}
 
-\item{bin}{Bin for histogram, distance between nearest breakpoints}
+\item{binwidth}{width of bins on histogram}
 }
 \value{
-Plot with the histogram of input data & kernal density esitmate (dashed) & gaussians obtained with a model (solid)
+Plot with the histogram of occurence of fragment contributions,
+its kernel density esitmate (dashed) and gaussians detected by a model
+(color solid)
 }
 \description{
-Visualize mclust model: plot the histogram of input data, dashed line: kernel density estimate and solid colored lines: gaussians corresponding to clusters found by model
+Plot mclust model
+}
+\examples{
+file_name <- system.file("extdata", "BBB_frag_contributions.txt", package = "rspci")
+df <- load_data(file_name)
+dx <- dplyr::filter(df, FragID == "OH (aliphatic)", Model == "consensus", Property == "overall")
+m <- clust(dx$Contribution, dx$MolID)
+plot_mclust(m)
 }

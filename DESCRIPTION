@@ -14,6 +14,7 @@ Imports:
   dplyr (>= 0.4.1),
   reshape2 (>= 1.4),
   Rcpp (>= 0.12.2),
-  mclust (>= 5.2)
+  mclust (>= 5.2),
+  ggplot2 (>= 2.1.0)
 URL: http://qsar4u.com/sirms_qsar.php
 RoxygenNote: 6.0.1

@@ -8,6 +8,10 @@ add_full_names(df, addM = TRUE, addN = TRUE)
 }
 \arguments{
 \item{df}{data.frame load with load_data function.}
+
+\item{addM}{whether or not to add the count of molecules contatning each fragment}
+
+\item{addN}{whether or not to add the count of each fragment across the whole data set}
 }
 \value{
 data.frame with the first column containing full fragments names

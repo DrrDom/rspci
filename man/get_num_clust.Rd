@@ -2,7 +2,7 @@
 % Please edit documentation in R/functions.R
 \name{get_num_clust}
 \alias{get_num_clust}
-\title{Gives the number of clusters mclust gaussian mixture model  contains}
+\title{Get number of clusters in mclust model}
 \usage{
 get_num_clust(model)
 }
@@ -10,16 +10,15 @@ get_num_clust(model)
 \item{model}{mclust model object}
 }
 \value{
-integer value: number of clusters (gaussians)
+number of clusters (gaussians)
 }
 \description{
-Gives the number of clusters mclust gaussian mixture model  contains
+Get number of clusters in mclust model
 }
 \examples{
-#' ' file_name <- system.file("extdata", "BBB_frag_contributions.txt", package = "rspci")
+file_name <- system.file("extdata", "BBB_frag_contributions.txt", package = "rspci")
 df <- load_data(file_name)
-dx <- filter(df, FragID == "OH (aliphatic)", Model == "consensus", Property == "overall")
+dx <- dplyr::filter(df, FragID == "OH (aliphatic)", Model == "consensus", Property == "overall")
 m <- clust(dx$Contribution, dx$MolID)
 num <- get_num_clust(m)
-
 }

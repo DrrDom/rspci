@@ -2,19 +2,26 @@
 % Please edit documentation in R/functions.R
 \name{clust_all}
 \alias{clust_all}
-\title{Builds mclust models (gaussian mixture models) for all (if possible, see details) fragments present in input data}
+\title{Build mclust models for all fragments}
 \usage{
 clust_all(data)
 }
 \arguments{
-\item{data}{input  data.frame}
+\item{data}{input data.frame}
 }
 \value{
-list containing mclust models for fragments contained in data.frame; each list element is named like a corresponding fragment
+list containing mclust models for fragments contained in data.frame
 }
 \description{
-Builds mclust models (gaussian mixture models) for all (if possible, see details) fragments present in input data
+Build mclust models for all fragments
 }
 \details{
-If a data.frame  contains fragments  occuring  either in exactly one molecule  once or in exactly one molecule more than once with equal contributions,  then for such fragments mixture models will not be built (due to lack of data).Nothing will be returned for them.
+If all contributuons of a fragment are identical the model
+will not be built.
+}
+\examples{
+file_name <- system.file("extdata", "BBB_frag_contributions.txt", package = "rspci")
+df <- load_data(file_name)
+df <- dplyr::filter(df, Model == "consensus", Property == "overall")
+models <- clust_all(df)
 }

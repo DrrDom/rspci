@@ -11,7 +11,7 @@ load_data(file_name, sep = "###", keep_models = NULL)
 
 \item{sep}{separator between molecule and fragment names. Default is ###.}
 
-\item{keep_model}{character vector with model names to keep. Only for those
+\item{keep_models}{character vector with model names to keep. Only for those
 models, if their number is more than one, consensus (average) contributions
 will be calculated.}
 }

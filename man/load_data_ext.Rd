@@ -21,5 +21,7 @@ Read and preprocess data about fragments contributions from a text file created 
 An input file doesn't have a header and consists of two columns with names and values
 }
 \examples{
-df <- load_data_ext(file_name)
+\dontrun{
+  df <- load_data_ext(file_name)
+}
 }

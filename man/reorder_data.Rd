@@ -12,11 +12,11 @@ reorder_data(df, by_model, by_prop, FUN = median,
 
 \item{by_model}{character name of a selected model name in column}
 
+\item{by_prop}{character name of a selected property}
+
 \item{FUN}{metric functions applied to order different fragments}
 
-\item{by_value}{character name of a selected value}
-
-\item{frag_name}{character name of column containing desired fragments names to reorder}
+\item{frag_col_name}{character name of column containing desired fragments names to reorder}
 }
 \value{
 data.frame.
@@ -30,5 +30,5 @@ This function can be applied only to the melted input data.frame.
 \examples{
 file_name <- system.file("extdata", "free-wilson_frag_contributions.txt", package = "rspci")
 df <- load_data(file_name)
-df <- reorder_data(df, frag_col_name = "FragID")
+df <- reorder_data(df, "consensus", "overall", frag_col_name = "FragID")
 }

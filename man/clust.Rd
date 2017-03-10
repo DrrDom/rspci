@@ -17,9 +17,13 @@ Mclust model object
 \description{
 Clustering fragment contributions
 }
+\details{
+Mclust model is a gaussian mixture model based on integrated complete-
+data likelihood optimization criterion.
+}
 \examples{
 file_name <- system.file("extdata", "BBB_frag_contributions.txt", package = "rspci")
 df <- load_data(file_name)
-dx <- filter(df, FragID == "OH (aliphatic)", Model == "consensus", Property == "overall")
+dx <- dplyr::filter(df, FragID == "OH (aliphatic)", Model == "consensus", Property == "overall")
 m <- clust(dx$Contribution, dx$MolID)
 }

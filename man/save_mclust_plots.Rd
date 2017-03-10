@@ -2,22 +2,22 @@
 % Please edit documentation in R/functions.R
 \name{save_mclust_plots}
 \alias{save_mclust_plots}
-\title{Save plots of all built mclust models to one png file}
+\title{Save plots of multiple mclust models in a grid image}
 \usage{
 save_mclust_plots(filename, models)
 }
 \arguments{
-\item{filename}{File name to save plots}
+\item{filename}{file name to save plots}
 
-\item{models}{List of mclust models for which plots will be saved}
+\item{models}{list of mclust models}
 }
 \description{
-Save plots of all built mclust models to one png file
+Save plots of multiple mclust models in a grid image
 }
 \examples{
-#' ' file_name <- system.file("extdata", "BBB_frag_contributions.txt", package = "rspci")
+file_name <- system.file("extdata", "BBB_frag_contributions.txt", package = "rspci")
 df <- load_data(file_name)
-df <- filter(df, Model == "consensus", Property == "overall")
+df <- dplyr::filter(df, Model == "consensus", Property == "overall")
 models <- clust_all(df)
 save_mclust_plots("models.png", models)
 }

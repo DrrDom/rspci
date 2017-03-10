@@ -2,18 +2,29 @@
 % Please edit documentation in R/functions.R
 \name{get_mol_ids}
 \alias{get_mol_ids}
-\title{Shows IDs of molecules for each cluster separately}
+\title{Get IDs of molecules for each cluster separately}
 \usage{
-get_mol_ids(model, uncert = 1)
+get_mol_ids(model, uncertainty = 1)
 }
 \arguments{
 \item{model}{mclust model}
 
-\item{uncert}{numeric value, the maximum level of uncertainty for molecules to belong to either cluster. Molecules with uncertaintiy higher then this threshold   will not appear in the resulting list}
+\item{uncertainty}{the maximum level of uncertainty for molecules
+to belong to a cluster. Molecules with uncertainty higher than this
+threshold will not appear in the resulting list}
 }
 \value{
-list of vectors containing MolIDs of molecules belonging to each cluster  (as many vectors as many clusters are in the model; elements of list are named according to clusters)
+list of vectors containing MolIDs of molecules belonging to
+each cluster if MolIDs were supplied to \link{clust}. Otherwise indices
+will be returned.
 }
 \description{
-Shows IDs of molecules for each cluster separately
+Get IDs of molecules for each cluster separately
+}
+\examples{
+file_name <- system.file("extdata", "BBB_frag_contributions.txt", package = "rspci")
+df <- load_data(file_name)
+dx <- dplyr::filter(df, FragID == "OH (aliphatic)", Model == "consensus", Property == "overall")
+m <- clust(dx$Contribution, dx$MolID)
+get_mol_ids(m, uncert = 0.2)
 }

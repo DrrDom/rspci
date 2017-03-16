@@ -9,10 +9,15 @@ save_mclust_plots(filename, models)
 \arguments{
 \item{filename}{file name to save plots}
 
-\item{models}{list of mclust models}
+\item{models}{list of mclust models (objects of class Mclust)}
 }
 \description{
 Save plots of multiple mclust models in a grid image
+}
+\details{
+If list contains more than 51 models, function will return more
+ than one png file, each next file will contain next (up to) 51 images. (File names will
+ get suffices "_i", i = 1,2,3,...)
 }
 \examples{
 file_name <- system.file("extdata", "BBB_frag_contributions.txt", package = "rspci")

@@ -489,8 +489,11 @@ plot_mclust <- function(model, main = NULL, binwidth = 0.1) {
 
 #' Save plots of multiple mclust models in a grid image
 #' @param filename file name to save plots
-#' @param models list of mclust models
+#' @param models list of mclust models (objects of class Mclust)
 #' @export
+#' @details If list contains more than 51 models, function will return more
+#'  than one png file, each next file will contain next (up to) 51 images. (File names will
+#'  get suffices "_i", i = 1,2,3,...)
 #' @importFrom grDevices dev.off png
 #' @importFrom graphics par
 #' @examples
@@ -500,15 +503,25 @@ plot_mclust <- function(model, main = NULL, binwidth = 0.1) {
 #' models <- clust_all(df)
 #' save_mclust_plots("models.png", models)
 save_mclust_plots <- function(filename, models) {
-  frnames <- names(models)
-  ncols <- min(length(frnames), 3)
-  nrows <- ceiling(length(frnames)/3)
-  png(filename, res = 300, height = 1000 * nrows, width = ncols * 1200)
-  par(mfrow = c(nrows, ncols))
-  par(mar = c(2,2,2,2))
-  for (n in frnames) {
-    plot_mclust(models[[n]], n)
+  pat <- rep(1:ceiling(length(models) / 51), each = 51, length.out = length(models))
+  fr_lst <- split(names(models), pat)
+  ncols <- min(length(models), 3)
+  m <- 0
+  for (i in fr_lst){
+    m <- m + 1
+    nrows <- ceiling(length(i)/3)
+    png(sub("^(.*)\\.png$", paste0("\\1_", m, ".png"), filename),
+        res = 300, height = 1000 * nrows, width = ncols * 1200)
+    par(mfrow = c(nrows, ncols))
+    par(mar = c(2,2,2,2))
+    for (n in i) {
+      plot_mclust(models[[n]], n)
+    }
+    dev.off()
   }
-  dev.off()
 }
+
+
+
+
 

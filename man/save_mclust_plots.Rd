@@ -9,7 +9,7 @@ save_mclust_plots(filename, models)
 \arguments{
 \item{filename}{file name to save plots}
 
-\item{models}{list of mclust models (objects of class Mclust)}
+\item{models}{Named list of Mclust models (names of the list are nessesary)}
 }
 \description{
 Save plots of multiple mclust models in a grid image

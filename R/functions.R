@@ -489,7 +489,7 @@ plot_mclust <- function(model, main = NULL, binwidth = 0.1) {
 
 #' Save plots of multiple mclust models in a grid image
 #' @param filename file name to save plots
-#' @param models list of mclust models (objects of class Mclust)
+#' @param models Named list of Mclust models (names of the list are nessesary)
 #' @export
 #' @details If list contains more than 51 models, function will return more
 #'  than one png file, each next file will contain next (up to) 51 images. (File names will

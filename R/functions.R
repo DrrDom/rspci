@@ -410,6 +410,8 @@ get_mol_ids <- function(model, uncertainty = 1) {
 
 #' Build mclust models for all fragments
 #' @param data input data.frame
+#' @param fragnames column of the data.frame containing fragments names
+#' (i.e. FragID or full_name)
 #' @return list containing mclust models for fragments contained in data.frame
 #' @details If all contributuons of a fragment are identical the model
 #' will not be built.
@@ -418,9 +420,10 @@ get_mol_ids <- function(model, uncertainty = 1) {
 #' file_name <- system.file("extdata", "BBB_frag_contributions.txt", package = "rspci")
 #' df <- load_data(file_name)
 #' df <- dplyr::filter(df, Model == "consensus", Property == "overall")
-#' models <- clust_all(df)
-clust_all <- function(data) {
-  m <- lapply(split(data, data$FragID), function(df) {
+#' df <- add_full_names(df)
+#' models <- clust_all(df, "full_name")
+    clust_all <- function(data, fragnames) {
+  m <- lapply(split(data, data[[fragnames]]), function(df) {
     if (nrow(unique(df)) > 1) {
       clust(df$Contribution, df$MolID)
     }
@@ -489,7 +492,7 @@ plot_mclust <- function(model, main = NULL, binwidth = 0.1) {
 
 #' Save plots of multiple mclust models in a grid image
 #' @param filename file name to save plots
-#' @param models Named list of Mclust models (names of the list are nessesary)
+#' @param models list of Mclust models
 #' @export
 #' @details If list contains more than 51 models, function will return more
 #'  than one png file, each next file will contain next (up to) 51 images. (File names will
@@ -500,11 +503,15 @@ plot_mclust <- function(model, main = NULL, binwidth = 0.1) {
 #' file_name <- system.file("extdata", "BBB_frag_contributions.txt", package = "rspci")
 #' df <- load_data(file_name)
 #' df <- dplyr::filter(df, Model == "consensus", Property == "overall")
-#' models <- clust_all(df)
+#' df <- add_full_names(df)
+#' models <- clust_all(df, "full_name")
 #' save_mclust_plots("models.png", models)
 save_mclust_plots <- function(filename, models) {
   pat <- rep(1:ceiling(length(models) / 51), each = 51, length.out = length(models))
-  fr_lst <- split(names(models), pat)
+  if  (!is.null(names(models))) {
+    fr_lst <- split(names(models), pat)} else {
+      fr_lst <- split(seq(1:length(models)), pat)
+    }
   ncols <- min(length(models), 3)
   m <- 0
   for (i in fr_lst){
@@ -519,6 +526,8 @@ save_mclust_plots <- function(filename, models) {
     }
     dev.off()
   }
+
+
 }
 
 

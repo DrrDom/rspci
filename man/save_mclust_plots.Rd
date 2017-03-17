@@ -9,7 +9,7 @@ save_mclust_plots(filename, models)
 \arguments{
 \item{filename}{file name to save plots}
 
-\item{models}{Named list of Mclust models (names of the list are nessesary)}
+\item{models}{list of Mclust models}
 }
 \description{
 Save plots of multiple mclust models in a grid image
@@ -23,6 +23,7 @@ If list contains more than 51 models, function will return more
 file_name <- system.file("extdata", "BBB_frag_contributions.txt", package = "rspci")
 df <- load_data(file_name)
 df <- dplyr::filter(df, Model == "consensus", Property == "overall")
-models <- clust_all(df)
+df <- add_full_names(df)
+models <- clust_all(df, "full_name")
 save_mclust_plots("models.png", models)
 }

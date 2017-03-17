@@ -4,10 +4,13 @@
 \alias{clust_all}
 \title{Build mclust models for all fragments}
 \usage{
-clust_all(data)
+clust_all(data, fragnames)
 }
 \arguments{
 \item{data}{input data.frame}
+
+\item{fragnames}{column of the data.frame containing fragments names
+(i.e. FragID or full_name)}
 }
 \value{
 list containing mclust models for fragments contained in data.frame
@@ -23,5 +26,6 @@ will not be built.
 file_name <- system.file("extdata", "BBB_frag_contributions.txt", package = "rspci")
 df <- load_data(file_name)
 df <- dplyr::filter(df, Model == "consensus", Property == "overall")
-models <- clust_all(df)
+df <- add_full_names(df)
+models <- clust_all(df, "full_name")
 }

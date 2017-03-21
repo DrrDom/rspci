@@ -2,7 +2,7 @@
 % Please edit documentation in R/functions.R
 \name{get_num_clust}
 \alias{get_num_clust}
-\title{Get number of clusters in mclust model}
+\title{Get number of gaussians (clusters) in mclust model}
 \usage{
 get_num_clust(model)
 }
@@ -10,10 +10,10 @@ get_num_clust(model)
 \item{model}{mclust model object}
 }
 \value{
-number of clusters (gaussians)
+number of gaussians (clusters)
 }
 \description{
-Get number of clusters in mclust model
+Get number of gaussians (clusters) in mclust model
 }
 \examples{
 file_name <- system.file("extdata", "BBB_frag_contributions.txt", package = "rspci")

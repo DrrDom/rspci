@@ -2,24 +2,24 @@
 % Please edit documentation in R/functions.R
 \name{clust_all}
 \alias{clust_all}
-\title{Build mclust models for all fragments}
+\title{Build mclust models for multiple fragments}
 \usage{
 clust_all(data, fragnames)
 }
 \arguments{
 \item{data}{input data.frame}
 
-\item{fragnames}{column of the data.frame containing fragments names
-(i.e. FragID or full_name)}
+\item{fragnames}{column name of the input data.frame containing fragment names
+(i.e. "FragID" or "full_name")}
 }
 \value{
-list containing mclust models for fragments contained in data.frame
+list containing mclust models
 }
 \description{
-Build mclust models for all fragments
+Build mclust models for multiple fragments
 }
 \details{
-If all contributuons of a fragment are identical the model
+If all contributions of a fragment are identical the model
 will not be built.
 }
 \examples{

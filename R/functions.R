@@ -364,6 +364,7 @@ clust <- function(data, molids = NULL) {
 
 
 #' Parameters of each gaussian (cluster)
+#'
 #' @param model mclust model object
 #' @return data.frame with mean, variance and proportion for each gaussian (cluster)
 #' @export
@@ -382,13 +383,14 @@ get_clust_params <- function(model) {
 
 
 
-#' Get IDs of molecules for each cluster separately
+#' Get IDs of molecules for each cluster
+#'
 #' @param model mclust model
 #' @param uncertainty the maximum level of uncertainty for molecules
 #' to belong to a cluster. Molecules with uncertainty higher than this
 #' threshold will not appear in the resulting list
-#' @return list of vectors containing MolIDs of molecules belonging to
-#' each cluster if MolIDs were supplied to \link{clust}. Otherwise indices
+#' @return list of vectors containing IDs of molecules belonging to
+#' each cluster if IDs were supplied to \link{clust}. Otherwise indices
 #' will be returned.
 #' @export
 #' @examples
@@ -408,12 +410,13 @@ get_mol_ids <- function(model, uncertainty = 1) {
 
 
 
-#' Build mclust models for all fragments
+#' Build mclust models for multiple fragments
+#'
 #' @param data input data.frame
-#' @param fragnames column of the data.frame containing fragments names
-#' (i.e. FragID or full_name)
-#' @return list containing mclust models for fragments contained in data.frame
-#' @details If all contributuons of a fragment are identical the model
+#' @param fragnames column name of the input data.frame containing fragment names
+#' (i.e. "FragID" or "full_name")
+#' @return list containing mclust models
+#' @details If all contributions of a fragment are identical the model
 #' will not be built.
 #' @export
 #' @examples
@@ -422,7 +425,7 @@ get_mol_ids <- function(model, uncertainty = 1) {
 #' df <- dplyr::filter(df, Model == "consensus", Property == "overall")
 #' df <- add_full_names(df)
 #' models <- clust_all(df, "full_name")
-    clust_all <- function(data, fragnames) {
+clust_all <- function(data, fragnames) {
   m <- lapply(split(data, data[[fragnames]]), function(df) {
     if (nrow(unique(df)) > 1) {
       clust(df$Contribution, df$MolID)
@@ -433,9 +436,10 @@ get_mol_ids <- function(model, uncertainty = 1) {
 
 
 
-#' Get number of clusters in mclust model
+#' Get number of gaussians (clusters) in mclust model
+#'
 #' @param model mclust model object
-#' @return number of clusters (gaussians)
+#' @return number of gaussians (clusters)
 #' @export
 #' @examples
 #' file_name <- system.file("extdata", "BBB_frag_contributions.txt", package = "rspci")
@@ -450,6 +454,7 @@ get_num_clust <- function(model) {
 
 
 #' Plot mclust model
+#'
 #' @param model mclust model object
 #' @param main plot title
 #' @param binwidth width of bins on histogram
@@ -491,10 +496,11 @@ plot_mclust <- function(model, main = NULL, binwidth = 0.1) {
 
 
 #' Save plots of multiple mclust models in a grid image
+#'
 #' @param filename file name to save plots
 #' @param models list of Mclust models
 #' @export
-#' @details If list contains more than 51 models, function will return more
+#' @details If list contains more than 51 models, the function will return more
 #'  than one png file, each next file will contain next (up to) 51 images. (File names will
 #'  get suffices "_i", i = 1,2,3,...)
 #' @importFrom grDevices dev.off png
@@ -509,9 +515,10 @@ plot_mclust <- function(model, main = NULL, binwidth = 0.1) {
 save_mclust_plots <- function(filename, models) {
   pat <- rep(1:ceiling(length(models) / 51), each = 51, length.out = length(models))
   if  (!is.null(names(models))) {
-    fr_lst <- split(names(models), pat)} else {
-      fr_lst <- split(seq(1:length(models)), pat)
-    }
+    fr_lst <- split(names(models), pat)
+  } else {
+    fr_lst <- split(seq(1:length(models)), pat)
+  }
   ncols <- min(length(models), 3)
   m <- 0
   for (i in fr_lst){
@@ -526,11 +533,5 @@ save_mclust_plots <- function(filename, models) {
     }
     dev.off()
   }
-
-
 }
-
-
-
-
 

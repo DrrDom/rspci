@@ -15,7 +15,7 @@ save_mclust_plots(filename, models)
 Save plots of multiple mclust models in a grid image
 }
 \details{
-If list contains more than 51 models, function will return more
+If list contains more than 51 models, the function will return more
  than one png file, each next file will contain next (up to) 51 images. (File names will
  get suffices "_i", i = 1,2,3,...)
 }

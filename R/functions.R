@@ -18,6 +18,11 @@ load_data <- function(file_name, sep = "###", keep_models = NULL) {
   names(contrib_names) <- c("overall", "LOGP", "CHARGE", "HB", "REFRACTIVITY")
   # load data
   df <- as.data.frame(data.table::fread(file_name, sep = "\t", header = T, na.strings = "", autostart = 3))
+  # keep only selected models
+  if (!is.null(keep_models)) {
+    df <- df[grepl(paste0("^", keep_models, "_", collapse = "|"), df[, 1]), ]
+  }
+  # prepare df
   rnames <- colnames(df)[-1]
   colnames(df) <- NULL
   rownames(df) <- df[,1]
@@ -25,31 +30,29 @@ load_data <- function(file_name, sep = "###", keep_models = NULL) {
   # get mol and frag names
   n <- as.data.frame(do.call(rbind, strsplit(rnames, sep)), stringsAsFactors = FALSE)
   colnames(n) <- c("MolID", "FragID")
+  # add unique fragment id
+  n$FragUID <- 1:nrow(n)
   # count occurencies
   nm <- n %>%
     dplyr::group_by(FragID) %>%
     dplyr::summarise(M = length(unique(MolID)), N = length(MolID))
   df <- cbind(n, nm[match(n$FragID, nm$FragID), -1], df)
   # melt
-  df <- reshape2::melt(df, id.vars = 1:4)
-  df <- cbind(df[, 1:4],
+  df <- reshape2::melt(df, id.vars = 1:5)
+  df <- cbind(df[, 1:5],
               do.call(rbind, strsplit(as.character(df$variable), "_")),
               df$value)
-  colnames(df)[5:7] <- c("Model", "Property", "Contribution")
+  colnames(df)[6:8] <- c("Model", "Property", "Contribution")
   df[, c("Model", "Property")] <- sapply(df[, c("Model", "Property")], as.character)
   # replace known descriptor property names
   v <- contrib_names[df[, "Property"]]
   v[is.na(v)] <- df[is.na(v), "Property"]
   df[, "Property"] <- v
-  # keep only selected models
-  if (!is.null(keep_models)) {
-    df <- df %>% dplyr::filter(Model %in% keep_models)
-  }
   # add average consensus
   if (length(unique(df$Model)) > 1) {
     cons_df <- split(df, df$Model)[[1]]
     cons_df$Model <- "consensus"
-    cons_df$Contribution <- rowMeans(sapply(split(df, df$Model), "[[", 7))
+    cons_df$Contribution <- rowMeans(sapply(split(df, df$Model), "[[", "Contribution"))
     df <- dplyr::bind_rows(df, cons_df)
   }
   return(df)
@@ -412,7 +415,7 @@ get_mol_ids <- function(model, uncertainty = 1) {
 
 #' Build mclust models for multiple fragments
 #'
-#' @param data input data.frame
+#' @param df input data.frame
 #' @param fragnames column name of the input data.frame containing fragment names
 #' (i.e. "FragID" or "full_name")
 #' @return list containing mclust models
@@ -425,10 +428,10 @@ get_mol_ids <- function(model, uncertainty = 1) {
 #' df <- dplyr::filter(df, Model == "consensus", Property == "overall")
 #' df <- add_full_names(df)
 #' models <- clust_all(df, "full_name")
-clust_all <- function(data, fragnames) {
-  m <- lapply(split(data, data[[fragnames]]), function(df) {
-    if (nrow(unique(df)) > 1) {
-      clust(df$Contribution, df$MolID)
+clust_all <- function(df, fragnames) {
+  m <- lapply(split(df, df[[fragnames]]), function(d) {
+    if (length(unique(d$Contribution)) > 1) {
+      clust(d$Contribution, d$MolID)
     }
   })
   m <- m[!sapply(m, is.null)]

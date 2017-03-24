@@ -4,10 +4,10 @@
 \alias{clust_all}
 \title{Build mclust models for multiple fragments}
 \usage{
-clust_all(data, fragnames)
+clust_all(df, fragnames)
 }
 \arguments{
-\item{data}{input data.frame}
+\item{df}{input data.frame}
 
 \item{fragnames}{column name of the input data.frame containing fragment names
 (i.e. "FragID" or "full_name")}

@@ -343,9 +343,10 @@ plot_contrib <- function(df, frag_name_col = "full_name", contrib_col = "Contrib
 #'
 #' @param data vector of fragment contributions.
 #' @param molids vector of molecule IDs corresponding to fragment contributions
-#' @return Mclust model object
+#' @return Mclust model object or NULL if data has a single unique observation value (see details).
 #' @details Mclust model is a gaussian mixture model based on integrated complete-
-#' data likelihood optimization criterion.
+#' data likelihood optimization criterion. If all values  in data are equal
+#' (after round(data,5)) or a single value provided, then NULL is returned.
 #' @export
 #' @importFrom mclust mclustICL Mclust mclustBIC
 #' @examples
@@ -357,8 +358,11 @@ clust <- function(data, molids = NULL) {
   if (!is.null(molids)) {
     names(data) <- molids
   }
-  icl <- mclustICL(data, modelNames = "V")
-  m <- Mclust(data, G = which.max(icl), modelNames = "V")
+  data <- round(data, 5)
+  if (length(unique(data)) > 1) {
+    icl <- mclustICL(data, modelNames = "V")
+    return(Mclust(data, G = which.max(icl), modelNames = "V"))
+  } else {return(NULL)}
 }
 
 
@@ -424,9 +428,7 @@ get_mol_ids <- function(model, uncertainty = 1) {
 #' models <- clust_all(df, "full_name")
     clust_all <- function(data, fragnames) {
   m <- lapply(split(data, data[[fragnames]]), function(df) {
-    if (nrow(unique(df)) > 1) {
-      clust(df$Contribution, df$MolID)
-    }
+    clust(df$Contribution, df$MolID)
   })
   m <- m[!sapply(m, is.null)]
 }

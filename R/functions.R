@@ -414,10 +414,11 @@ get_mol_ids <- function(model, uncertainty = 1) {
 
 #' Build mclust models for all fragments
 #' @param data input data.frame
-#' @param fragnames column of the data.frame containing fragments names
-#' (i.e. FragID or full_name)
+#' @param fragnames column of the data.frame containing fragments names (i.e. FragID or full_name)
+#' @param contrib_col_name name of a column with contribution values
+#' @param mol_col_name name of a column with names (ids) of molecules
 #' @return list containing mclust models for fragments contained in data.frame
-#' @details If all contributuons of a fragment are identical the model
+#' @details If all contributuons of a fragment are identical the model for that fragment
 #' will not be built.
 #' @export
 #' @examples
@@ -426,11 +427,11 @@ get_mol_ids <- function(model, uncertainty = 1) {
 #' df <- dplyr::filter(df, Model == "consensus", Property == "overall")
 #' df <- add_full_names(df)
 #' models <- clust_all(df, "full_name")
-    clust_all <- function(data, fragnames) {
+clust_all <- function(data, fragnames, contrib_col_name = "Contribution", mol_col_name = "MolID") {
   m <- lapply(split(data, data[[fragnames]]), function(df) {
-    clust(df$Contribution, df$MolID)
+    clust(df[[contrib_col_name]], df[[mol_col_name]])
   })
-  m <- m[!sapply(m, is.null)]
+  return(m[!sapply(m, is.null)])
 }
 
 

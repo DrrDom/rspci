@@ -20,7 +20,7 @@ Clustering fragment contributions
 \details{
 Mclust model is a gaussian mixture model based on integrated complete-
 data likelihood optimization criterion. If all values  in data are equal
-(after round(data,5)) or a single value provided, then NULL is returned.
+ or a single value provided, then NULL is returned.
 }
 \examples{
 file_name <- system.file("extdata", "BBB_frag_contributions.txt", package = "rspci")

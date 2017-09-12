@@ -4,13 +4,17 @@
 \alias{clust_all}
 \title{Build mclust models for multiple fragments}
 \usage{
-clust_all(df, fragnames)
+clust_all(data, fragnames, contrib_col_name = "Contribution",
+  mol_col_name = "MolID")
 }
 \arguments{
 \item{df}{input data.frame}
 
-\item{fragnames}{column name of the input data.frame containing fragment names
-(i.e. "FragID" or "full_name")}
+\item{fragnames}{column of the data.frame containing fragments names (i.e. FragID or full_name)}
+
+\item{contrib_col_name}{name of a column with contribution values}
+
+\item{mol_col_name}{name of a column with names (ids) of molecules}
 }
 \value{
 list containing mclust models
@@ -19,7 +23,7 @@ list containing mclust models
 Build mclust models for multiple fragments
 }
 \details{
-If all contributions of a fragment are identical the model
+If all contributuons of a fragment are identical the model for that fragment
 will not be built.
 }
 \examples{

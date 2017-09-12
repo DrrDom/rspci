@@ -12,14 +12,15 @@ clust(data, molids = NULL)
 \item{molids}{vector of molecule IDs corresponding to fragment contributions}
 }
 \value{
-Mclust model object
+Mclust model object or NULL if data has a single unique observation value (see details).
 }
 \description{
 Clustering fragment contributions
 }
 \details{
 Mclust model is a gaussian mixture model based on integrated complete-
-data likelihood optimization criterion.
+data likelihood optimization criterion. If all values  in data are equal
+ or a single value provided, then NULL is returned.
 }
 \examples{
 file_name <- system.file("extdata", "BBB_frag_contributions.txt", package = "rspci")

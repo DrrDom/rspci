@@ -346,9 +346,10 @@ plot_contrib <- function(df, frag_name_col = "full_name", contrib_col = "Contrib
 #'
 #' @param data vector of fragment contributions.
 #' @param molids vector of molecule IDs corresponding to fragment contributions
-#' @return Mclust model object
+#' @return Mclust model object or NULL if data has a single unique observation value (see details).
 #' @details Mclust model is a gaussian mixture model based on integrated complete-
-#' data likelihood optimization criterion.
+#' data likelihood optimization criterion. If all values  in data are equal
+#'  or a single value provided, then NULL is returned.
 #' @export
 #' @importFrom mclust mclustICL Mclust mclustBIC
 #' @examples
@@ -360,8 +361,10 @@ clust <- function(data, molids = NULL) {
   if (!is.null(molids)) {
     names(data) <- molids
   }
-  icl <- mclustICL(data, modelNames = "V")
-  m <- Mclust(data, G = which.max(icl), modelNames = "V")
+  if (length(unique(data)) > 1) {
+    icl <- mclustICL(data, modelNames = "V")
+    return(Mclust(data, G = which.max(icl), modelNames = "V"))
+  } else {return(NULL)}
 }
 
 
@@ -414,12 +417,13 @@ get_mol_ids <- function(model, uncertainty = 1) {
 
 
 #' Build mclust models for multiple fragments
-#'
-#' @param df input data.frame
-#' @param fragnames column name of the input data.frame containing fragment names
-#' (i.e. "FragID" or "full_name")
-#' @return list containing mclust models
-#' @details If all contributions of a fragment are identical the model
+
+#' @param data input data.frame
+#' @param fragnames column of the data.frame containing fragments names (i.e. FragID or full_name)
+#' @param contrib_col_name name of a column with contribution values
+#' @param mol_col_name name of a column with names (ids) of molecules
+#' @return list containing mclust models for fragments contained in data.frame
+#' @details If all contributions of a fragment are identical the model for that fragment
 #' will not be built.
 #' @export
 #' @examples
@@ -428,13 +432,11 @@ get_mol_ids <- function(model, uncertainty = 1) {
 #' df <- dplyr::filter(df, Model == "consensus", Property == "overall")
 #' df <- add_full_names(df)
 #' models <- clust_all(df, "full_name")
-clust_all <- function(df, fragnames) {
-  m <- lapply(split(df, df[[fragnames]]), function(d) {
-    if (length(unique(d$Contribution)) > 1) {
-      clust(d$Contribution, d$MolID)
-    }
+clust_all <- function(data, fragnames, contrib_col_name = "Contribution", mol_col_name = "MolID") {
+  m <- lapply(split(data, data[[fragnames]]), function(df) {
+    clust(df[[contrib_col_name]], df[[mol_col_name]])
   })
-  m <- m[!sapply(m, is.null)]
+  return(m[!sapply(m, is.null)])
 }
 
 

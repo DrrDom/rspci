@@ -2,7 +2,7 @@
 % Please edit documentation in R/functions.R
 \name{get_mol_ids}
 \alias{get_mol_ids}
-\title{Get IDs of molecules for each cluster separately}
+\title{Get IDs of molecules for each cluster}
 \usage{
 get_mol_ids(model, uncertainty = 1)
 }
@@ -14,12 +14,12 @@ to belong to a cluster. Molecules with uncertainty higher than this
 threshold will not appear in the resulting list}
 }
 \value{
-list of vectors containing MolIDs of molecules belonging to
-each cluster if MolIDs were supplied to \link{clust}. Otherwise indices
+list of vectors containing IDs of molecules belonging to
+each cluster if IDs were supplied to \link{clust}. Otherwise indices
 will be returned.
 }
 \description{
-Get IDs of molecules for each cluster separately
+Get IDs of molecules for each cluster
 }
 \examples{
 file_name <- system.file("extdata", "BBB_frag_contributions.txt", package = "rspci")

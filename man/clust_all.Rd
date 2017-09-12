@@ -2,13 +2,13 @@
 % Please edit documentation in R/functions.R
 \name{clust_all}
 \alias{clust_all}
-\title{Build mclust models for all fragments}
+\title{Build mclust models for multiple fragments}
 \usage{
 clust_all(data, fragnames, contrib_col_name = "Contribution",
   mol_col_name = "MolID")
 }
 \arguments{
-\item{data}{input data.frame}
+\item{df}{input data.frame}
 
 \item{fragnames}{column of the data.frame containing fragments names (i.e. FragID or full_name)}
 
@@ -17,10 +17,10 @@ clust_all(data, fragnames, contrib_col_name = "Contribution",
 \item{mol_col_name}{name of a column with names (ids) of molecules}
 }
 \value{
-list containing mclust models for fragments contained in data.frame
+list containing mclust models
 }
 \description{
-Build mclust models for all fragments
+Build mclust models for multiple fragments
 }
 \details{
 If all contributuons of a fragment are identical the model for that fragment

@@ -103,3 +103,40 @@ df <- d %>%
   summarise(median = median(Contribution)) %>%
   arrange(desc(median))
 ```
+
+
+
+#### Clustering fragment contributions to detect specific molecular context
+
+Load data again
+```
+file_name <- system.file("extdata", "BBB_frag_contributions.txt", package = "rspci")
+d <- load_data(file_name)
+d <- add_full_names(d)
+```
+select a fragment and desired contributions to cluster
+```
+dx <- dplyr::filter(d, FragID == "OH (aliphatic)", Model == "consensus", Property == "overall")
+```
+build a Gaussian mixture model which detects possible clusters in the distribution of fragment contributions
+```
+m <- clust(dx$Contribution, dx$MolID)
+```
+The model can be visualized
+```
+plot_mclust(m, "Main title", 0.05)
+```
+Parameters (mean, variance, proportion) of the clusters can be retrieved
+```
+p <- get_clust_params(m)
+```
+Molecule IDs which where supplied to `clust` function together with fragment contributions can be retrieved as well and further analyzed for possible patterns
+```
+ids <- get_mol_ids(m, uncert = 0.2)
+```
+It is possible to build many models at once for a selected model and save them to grid image
+```
+dy <- dplyr::filter(d, Model == "consensus", Property == "overall")
+models <- clust_all(dy, "full_name")
+save_mclust_plots("models.png", models)
+```

@@ -6,7 +6,7 @@ Date: 2015-12-14
 Authors@R: person("Pavel", "Polishchuk", email = "pavel_polishchuk@ukr.net",
   role = c("aut", "cre"))
 Maintainer: Pavel Polishchuk <pavel_polishchuk@ukr.net>
-Description: Analysis of fragments contributions calculated with strictural or physico-chemical interpretation approaches by means of SPCI software tool. SPCI (structural and physico-chemical interpretation) tool was developed for automatic building of QSAR models and their subsequent interpretation. More details about developed approahes are in the article Molecular Informatics, 2013, 32, 843-853.
+Description: Analysis of fragments contributions calculated with strictural or physico-chemical interpretation approaches by means of SPCI software tool. SPCI (structural and physico-chemical interpretation) tool was developed for automatic building of QSAR models and their subsequent interpretation. More details about developed approaches are in the articles: Molecular Informatics, 2013, 32, 843-853 and J. Chem. Inf. Model., 2016, 56 (8), 1455–1469.
 Depends: R (>= 3.4.1)
 License: BSD
 LazyData: TRUE

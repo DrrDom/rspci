@@ -4,19 +4,23 @@
 \alias{save_mclust_plots}
 \title{Save plots of multiple mclust models in a grid image}
 \usage{
-save_mclust_plots(filename, models)
+save_mclust_plots(filename, models, xlab = "contribution", ylab = "density")
 }
 \arguments{
 \item{filename}{file name to save plots}
 
 \item{models}{list of Mclust models}
+
+\item{xlab}{label for x axis}
+
+\item{ylab}{label for y axis}
 }
 \description{
 Save plots of multiple mclust models in a grid image
 }
 \details{
-If list contains more than 51 models, the function will return more
- than one png file, each next file will contain next (up to) 51 images. (File names will
+If list contains more than 60 models, the function will return more
+ than one png file, each next file will contain next (up to) 60 images. (File names will
  get suffices "_i", i = 1,2,3,...)
 }
 \examples{

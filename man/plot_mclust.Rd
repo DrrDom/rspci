@@ -4,14 +4,19 @@
 \alias{plot_mclust}
 \title{Plot mclust model}
 \usage{
-plot_mclust(model, main = NULL, binwidth = 0.1)
+plot_mclust(model, binwidth = 0.1, title = NULL, xlab = "Contribution",
+  ylab = "density")
 }
 \arguments{
 \item{model}{mclust model object}
 
-\item{main}{plot title}
-
 \item{binwidth}{width of bins on histogram}
+
+\item{title}{plot title}
+
+\item{xlab}{label of x axis}
+
+\item{ylab}{label of y axis}
 }
 \value{
 Plot with the histogram of occurence of fragment contributions,

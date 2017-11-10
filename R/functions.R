@@ -461,8 +461,8 @@ get_num_clust <- function(model) {
 #' Plot mclust model
 #'
 #' @param model mclust model object
-#' @param bnwdth width of bins on histogram
-#' @param ttl plot title
+#' @param binwidth width of bins on histogram
+#' @param title plot title
 #' @param xlab label of x axis
 #' @param ylab label of y axis
 #' @return Plot with the histogram of occurence of fragment contributions,
@@ -478,27 +478,38 @@ get_num_clust <- function(model) {
 #' m <- clust(dx$Contribution, dx$MolID)
 #' plot_mclust(m)
 
-plot_mclust <- function(model, bnwdth = 0.1, ttl = NULL, xlab = "Contribution", ylab = "density"){
+plot_mclust <- function(model, binwidth = 0.1, title = NULL, xlab = "Contribution", ylab = "density"){
   k <- model$G
   col2<- rep(c("#CC79A7", "#D55E00", "#0072B2", "#F0E442", "#009E73", "#56B4E9", "#E69F00"), len = k)
 
   # lt <- 1:k
-  plot_component <- function(x, mu, sigsq, pr){pr * dnorm(x, mean = mu, sd = sigsq)}
-  p <-  ggplot((as.data.frame(model$data)),
-               aes(V1)) + geom_histogram(binwidth = bnwdth, aes(y = ..density..),
-                                         fill = "white", col = "black") +  geom_density(lty = 2, lwd = 1) + labs(title = ttl, x = xlab, y = ylab) + theme(panel.background=element_rect(fill="white"),
-                                                                                                                                                          axis.line = element_line(color = "black"),
-                                                                                                                                                          plot.title=element_text(hjust=0.5,size = 11))
-  for (i in 1:k) {lt <- 1:k
-  p = p + stat_function(geom = "line", fun =  plot_component, args = list( mu = model$parameters$mean[i],
-                                                                           sigsq =  sqrt(model$parameters$variance$sigmasq[i]) ,
-                                                                           pr = model$parameters$pro[i]), col = col2[i],
-                        # lty = lt[i],
-                        lwd = 1.5)
+  plot_component <- function(x, mu, sigsq, pr) {
+    pr * dnorm(x, mean = mu, sd = sigsq)
+  }
+  p <-  ggplot(as.data.frame(model$data), aes(V1)) +
+    geom_histogram(binwidth = binwidth, aes(y = ..density..), fill = "white", col = "black") +  geom_density(lty = 2, lwd = 1) +
+    labs(title = title, x = xlab, y = ylab) +
+    theme(panel.background = element_rect(fill = "white"),
+          axis.line = element_line(color = "black"),
+          plot.title = element_text(hjust = 0.5, size = 11))
+
+  for (i in 1:k) {
+    lt <- 1:k
+    p <- p +
+      stat_function(geom = "line",
+                    fun =  plot_component,
+                    args = list(mu = model$parameters$mean[i],
+                                sigsq = sqrt(model$parameters$variance$sigmasq[i]),
+                                pr = model$parameters$pro[i]), col = col2[i],
+                    lwd = 1.5)
   }
 
   return (p)
+
 }
+
+
+
 #' Save plots of multiple mclust models in a grid image
 #'
 #' @param filename file name to save plots
@@ -520,29 +531,38 @@ plot_mclust <- function(model, bnwdth = 0.1, ttl = NULL, xlab = "Contribution", 
 #' save_mclust_plots("models.png", models)
 
 save_mclust_plots  <- function(filename, models, xlab = "contribution", ylab = "density") {
+
   pat <- rep(1:ceiling(length(models)/60), each = 60, length.out = length(models))
+
   if  (!is.null(names(models))) {
-    fr_lst <- split(names(models), pat)} else {
-      fr_lst <- split(seq(1:length(models)), pat)
-    }
-  ncols <- min(length(models),4)
+    fr_lst <- split(names(models), pat)
+  } else {
+    fr_lst <- split(seq(1:length(models)), pat)
+  }
+
   count <- 1
-  for (i in fr_lst){
 
-    plots <- lapply(i,function(nm) plot_mclust(models[[nm]],ttl = nm, xlab = NULL, ylab=NULL))
+  for (i in fr_lst) {
 
-    numPlots = length(plots)
+    plots <- lapply(i, function(nm) plot_mclust(models[[nm]], title = nm, xlab = NULL, ylab = NULL))
 
-    nrw = ceiling(numPlots/4)
-    if (numPlots == 1) {ggsave(filename, plots[[1]])} else {
+    nrw = ceiling(length(plots)/4)
+
+    if (length(plots) == 1) {
+
+      ggsave(filename, plots[[1]])
+
+    } else {
 
       ggsave(sub("^(.*)\\.png$", paste0("\\1_", count, ".png"), filename),
-             marrangeGrob(grobs = plots,  ncol = 4,
-                          nrow = nrw, top = NULL, left=ylab, bottom=xlab),
+             marrangeGrob(grobs = plots,  ncol = 4, nrow = nrw,
+                          top = NULL, left=ylab, bottom=xlab),
              height  = 3.33*nrw, width = 16)
 
     }
-    count <- count+1
+
+    count <- count + 1
+
   }
 
 }

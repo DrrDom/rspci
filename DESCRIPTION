@@ -16,6 +16,11 @@ Imports:
   reshape2 (>= 1.4),
   Rcpp (>= 0.12.2),
   mclust (>= 5.3),
+<<<<<<< HEAD
+  ggplot2 (>= 2.1.0),
+  gridExtra (>= 2.3)
+=======
   ggplot2 (>= 2.1.0)
+>>>>>>> b25448e42a6b14914c7a2e669869e806883ab77c
 URL: http://qsar4u.com/sirms_qsar.php
 RoxygenNote: 6.0.1

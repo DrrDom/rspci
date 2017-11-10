@@ -461,55 +461,56 @@ get_num_clust <- function(model) {
 #' Plot mclust model
 #'
 #' @param model mclust model object
-#' @param main plot title
-#' @param binwidth width of bins on histogram
+#' @param bnwdth width of bins on histogram
+#' @param ttl plot title
+#' @param xlab label of x axis
+#' @param ylab label of y axis
 #' @return Plot with the histogram of occurence of fragment contributions,
 #' its kernel density esitmate (dashed) and gaussians detected by a model
 #' (color solid)
 #' @export
-#' @importFrom graphics hist lines
-#' @importFrom stats density dnorm
+#' @importFrom ggplot2 aes geom_histogram geom_density
+#' theme labs element_rect element_line element_text stat_function
 #' @examples
 #' file_name <- system.file("extdata", "BBB_frag_contributions.txt", package = "rspci")
 #' df <- load_data(file_name)
 #' dx <- dplyr::filter(df, FragID == "OH (aliphatic)", Model == "consensus", Property == "overall")
 #' m <- clust(dx$Contribution, dx$MolID)
 #' plot_mclust(m)
-plot_mclust <- function(model, main = NULL, binwidth = 0.1) {
 
-  breaks <- function(s, bin = binwidth) {
-    seq(min(s), max(s) + bin, bin)
+plot_mclust <- function(model, bnwdth = 0.1, ttl = NULL, xlab = "Contribution", ylab = "density"){
+  k <- model$G
+  col2<- rep(c("#CC79A7", "#D55E00", "#0072B2", "#F0E442", "#009E73", "#56B4E9", "#E69F00"), len = k)
+
+  # lt <- 1:k
+  plot_component <- function(x, mu, sigsq, pr){pr * dnorm(x, mean = mu, sd = sigsq)}
+  p <-  ggplot((as.data.frame(model$data)),
+               aes(V1)) + geom_histogram(binwidth = bnwdth, aes(y = ..density..),
+                                         fill = "white", col = "black") +  geom_density(lty = 2, lwd = 1) + labs(title = ttl, x = xlab, y = ylab) + theme(panel.background=element_rect(fill="white"),
+                                                                                                                                                          axis.line = element_line(color = "black"),
+                                                                                                                                                          plot.title=element_text(hjust=0.5,size = 11))
+  for (i in 1:k) {lt <- 1:k
+  p = p + stat_function(geom = "line", fun =  plot_component, args = list( mu = model$parameters$mean[i],
+                                                                           sigsq =  sqrt(model$parameters$variance$sigmasq[i]) ,
+                                                                           pr = model$parameters$pro[i]), col = col2[i],
+                        # lty = lt[i],
+                        lwd = 1.5)
   }
 
-  m <- model
-  k <- m$G
-  x <- sort(m$data[,1])
-  a <- hist(x, plot = FALSE)
-  col2 <- 2:(k + 1)
-  hist(x, breaks = breaks, prob = TRUE, main = main, xlab = "Values")
-  for (i in 1:k) {
-    xx <- seq(min(x), max(x), length.out = 100)
-    lines(xx, m$parameters$pro[i] * dnorm(xx,
-                                          mean = m$parameters$mean[i],
-                                          sd = sqrt(m$parameters$variance$sigmasq[i])),
-          col = col2[i], lwd = 2)
-  }
-
-  lines(density(x), lty = 2, lwd = 2)
+  return (p)
 }
-
-
-
 #' Save plots of multiple mclust models in a grid image
 #'
 #' @param filename file name to save plots
 #' @param models list of Mclust models
+#' @param xlab label for x axis
+#' @param ylab label for y axis
 #' @export
-#' @details If list contains more than 51 models, the function will return more
-#'  than one png file, each next file will contain next (up to) 51 images. (File names will
+#' @details If list contains more than 60 models, the function will return more
+#'  than one png file, each next file will contain next (up to) 60 images. (File names will
 #'  get suffices "_i", i = 1,2,3,...)
-#' @importFrom grDevices dev.off png
-#' @importFrom graphics par
+#' @importFrom ggplot2 ggsave
+#' @importFrom gridExtra marrangeGrob
 #' @examples
 #' file_name <- system.file("extdata", "BBB_frag_contributions.txt", package = "rspci")
 #' df <- load_data(file_name)
@@ -517,26 +518,34 @@ plot_mclust <- function(model, main = NULL, binwidth = 0.1) {
 #' df <- add_full_names(df)
 #' models <- clust_all(df, "full_name")
 #' save_mclust_plots("models.png", models)
-save_mclust_plots <- function(filename, models) {
-  pat <- rep(1:ceiling(length(models) / 51), each = 51, length.out = length(models))
+
+save_mclust_plots  <- function(filename, models, xlab = "contribution", ylab = "density") {
+  pat <- rep(1:ceiling(length(models)/60), each = 60, length.out = length(models))
   if  (!is.null(names(models))) {
-    fr_lst <- split(names(models), pat)
-  } else {
-    fr_lst <- split(seq(1:length(models)), pat)
-  }
-  ncols <- min(length(models), 3)
-  m <- 0
-  for (i in fr_lst){
-    m <- m + 1
-    nrows <- ceiling(length(i)/3)
-    png(sub("^(.*)\\.png$", paste0("\\1_", m, ".png"), filename),
-        res = 300, height = 1000 * nrows, width = ncols * 1200)
-    par(mfrow = c(nrows, ncols))
-    par(mar = c(2,2,2,2))
-    for (n in i) {
-      plot_mclust(models[[n]], n)
+    fr_lst <- split(names(models), pat)} else {
+      fr_lst <- split(seq(1:length(models)), pat)
     }
-    dev.off()
+  ncols <- min(length(models),4)
+  count <- 1
+  for (i in fr_lst){
+
+    plots <- lapply(i,function(nm) plot_mclust(models[[nm]],ttl = nm, xlab = NULL, ylab=NULL))
+
+    numPlots = length(plots)
+
+    nrw = ceiling(numPlots/4)
+    if (numPlots == 1) {ggsave(filename, plots[[1]])} else {
+
+      ggsave(sub("^(.*)\\.png$", paste0("\\1_", count, ".png"), filename),
+             marrangeGrob(grobs = plots,  ncol = 4,
+                          nrow = nrw, top = NULL, left=ylab, bottom=xlab),
+             height  = 3.33*nrw, width = 16)
+
+    }
+    count <- count+1
   }
+
 }
+
+
 

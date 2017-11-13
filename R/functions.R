@@ -548,7 +548,7 @@ save_mclust_plots  <- function(filename, models, xlab = "contribution", ylab = "
 
     nrw = ceiling(length(plots)/4)
 
-    if (length(plots) == 1) {
+    if (length(fr_lst) == 1) {
 
       ggsave(filename, plots[[1]])
 

@@ -541,10 +541,10 @@ save_mclust_plots <- function(filename, models, xlab = "contribution", ylab = "d
   }
   if (length(fr_lst) == 1){
     plots <- lapply(fr_lst[[1]], function(nm) plot_mclust(models[[nm]], title = nm, xlab = NULL, ylab = NULL))
-    ggsave(filename,  ggsave(filename,
-                             marrangeGrob(grobs = plots,  ncol = 4, nrow = ceiling(length(plots)/4),
-                                          top = NULL, left=ylab, bottom=xlab),
-                             height  = 3.33* ceiling(length(plots)/4), width = 16))
+    ggsave(filename,
+            marrangeGrob(grobs = plots,  ncol = 4, nrow = ceiling(length(plots)/4),
+                         top = NULL, left=ylab, bottom=xlab),
+            height  = 3.33* ceiling(length(plots)/4), width = 16)
   } else {
     count <- 1
     for (i in fr_lst) {

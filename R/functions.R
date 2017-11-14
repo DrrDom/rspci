@@ -530,7 +530,7 @@ plot_mclust <- function(model, binwidth = 0.1, title = NULL, xlab = "Contributio
 #' models <- clust_all(df, "full_name")
 #' save_mclust_plots("models.png", models)
 
-save_mclust_plots  <- function(filename, models, xlab = "contribution", ylab = "density") {
+save_mclust_plots <- function(filename, models, xlab = "contribution", ylab = "density") {
 
   pat <- rep(1:ceiling(length(models)/60), each = 60, length.out = length(models))
 
@@ -539,33 +539,27 @@ save_mclust_plots  <- function(filename, models, xlab = "contribution", ylab = "
   } else {
     fr_lst <- split(seq(1:length(models)), pat)
   }
+  if (length(fr_lst) == 1){
+    plots <- lapply(fr_lst[[1]], function(nm) plot_mclust(models[[nm]], title = nm, xlab = NULL, ylab = NULL))
+    ggsave(filename,  ggsave(filename,
+                             marrangeGrob(grobs = plots,  ncol = 4, nrow = ceiling(length(plots)/4),
+                                          top = NULL, left=ylab, bottom=xlab),
+                             height  = 3.33* ceiling(length(plots)/4), width = 16))
+  } else {
+    count <- 1
+    for (i in fr_lst) {
 
-  count <- 1
-
-  for (i in fr_lst) {
-
-    plots <- lapply(i, function(nm) plot_mclust(models[[nm]], title = nm, xlab = NULL, ylab = NULL))
-
-    nrw = ceiling(length(plots)/4)
-
-    if (length(fr_lst) == 1) {
-
-      ggsave(filename, plots[[1]])
-
-    } else {
+      plots <- lapply(i, function(nm) plot_mclust(models[[nm]], title = nm, xlab = NULL, ylab = NULL))
 
       ggsave(sub("^(.*)\\.png$", paste0("\\1_", count, ".png"), filename),
-             marrangeGrob(grobs = plots,  ncol = 4, nrow = nrw,
+             marrangeGrob(grobs = plots,  ncol = 4, nrow = ceiling(length(plots)/4),
                           top = NULL, left=ylab, bottom=xlab),
-             height  = 3.33*nrw, width = 16)
+             height  = 3.33* ceiling(length(plots)/4), width = 16)
+      count <- count + 1
 
     }
-
-    count <- count + 1
-
   }
 
 }
-
 
 

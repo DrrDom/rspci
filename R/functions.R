@@ -17,7 +17,7 @@ load_data <- function(file_name, sep = "###", keep_models = NULL) {
   contrib_names <- c("overall", "hydrophobic", "electrostatic", "hydrogen bonding", "dispersive")
   names(contrib_names) <- c("overall", "LOGP", "CHARGE", "HB", "REFRACTIVITY")
   # load data
-  df <- as.data.frame(data.table::fread(file_name, sep = "\t", header = T, na.strings = "", autostart = 3))
+  df <- as.data.frame(data.table::fread(file_name, sep = "\t", header = T, na.strings = ""))
   # keep only selected models
   if (!is.null(keep_models)) {
     df <- df[grepl(paste0("^", keep_models, "_", collapse = "|"), df[, 1]), ]

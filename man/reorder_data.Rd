@@ -4,8 +4,7 @@
 \alias{reorder_data}
 \title{Reorder fragments names represented as factor levels based on a specified metric}
 \usage{
-reorder_data(df, by_model, by_prop, FUN = median,
-  frag_col_name = "full_name")
+reorder_data(df, by_model, by_prop, FUN = median, frag_col_name = "full_name")
 }
 \arguments{
 \item{df}{input data.frame.}

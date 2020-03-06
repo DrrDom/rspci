@@ -4,8 +4,12 @@
 \alias{clust_all}
 \title{Build mclust models for multiple fragments}
 \usage{
-clust_all(data, fragnames, contrib_col_name = "Contribution",
-  mol_col_name = "MolID")
+clust_all(
+  data,
+  fragnames,
+  contrib_col_name = "Contribution",
+  mol_col_name = "MolID"
+)
 }
 \arguments{
 \item{data}{input data.frame}

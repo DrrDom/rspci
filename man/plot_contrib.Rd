@@ -4,9 +4,17 @@
 \alias{plot_contrib}
 \title{Plot fragments contributions}
 \usage{
-plot_contrib(df, frag_name_col = "full_name", contrib_col = "Contribution",
-  plot_type = "boxplot", FUN = median, show_sign_text = NULL,
-  show_sep_lines = TRUE, flip = TRUE, x_labels_angle = 60)
+plot_contrib(
+  df,
+  frag_name_col = "full_name",
+  contrib_col = "Contribution",
+  plot_type = "boxplot",
+  FUN = median,
+  show_sign_text = NULL,
+  show_sep_lines = TRUE,
+  flip = TRUE,
+  x_labels_angle = 60
+)
 }
 \arguments{
 \item{df}{input data.frame.}

@@ -4,8 +4,13 @@
 \alias{plot_mclust}
 \title{Plot mclust model}
 \usage{
-plot_mclust(model, binwidth = 0.1, title = NULL, xlab = "Contribution",
-  ylab = "density")
+plot_mclust(
+  model,
+  binwidth = 0.1,
+  title = NULL,
+  xlab = "Contribution",
+  ylab = "density"
+)
 }
 \arguments{
 \item{model}{mclust model object}

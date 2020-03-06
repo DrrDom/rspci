@@ -31,7 +31,9 @@ load_data <- function(file_name, sep = "###", keep_models = NULL) {
   n <- as.data.frame(do.call(rbind, strsplit(rnames, sep)), stringsAsFactors = FALSE)
   colnames(n) <- c("MolID", "FragID")
   # add unique fragment id
-  n$FragUID <- 1:nrow(n)
+  n$FragUID <- as.integer(sub("^.*#([0-9]+)$", "\\1", n$FragID))
+  n$FragID <- sub("^(.*)#[0-9]+$", "\\1", n$FragID)
+
   # count occurencies
   nm <- n %>%
     dplyr::group_by(FragID) %>%

@@ -1,4 +1,4 @@
-SPCI software calculates fragments contributions to an investigated property by means of interpretation of QSAR models. This package helps to analyze and visualize contributions.
+SPCI software calculates fragments contributions to a modeled property by means of interpretation of QSAR models (https://github.com/DrrDom/spci). This package helps to analyze and visualize contributions.
 
 # How to install
 
@@ -140,3 +140,9 @@ dy <- dplyr::filter(d, Model == "consensus", Property == "overall")
 models <- clust_all(dy, "full_name")
 save_mclust_plots("models.png", models)
 ```
+
+# Citation
+
+1.	Polishchuk, P. G.; Kuz'min, V. E.; Artemenko, A. G.; Muratov, E. N., Universal Approach for Structural Interpretation of Qsar/Qspr Models. Mol. Inf. 2013, 32, 843-853 - http://dx.doi.org/10.1002/minf.201300029 - structural interpretation.
+2.	Polishchuk, P.; Tinkov, O.; Khristova, T.; Ognichenko, L.; Kosinskaya, A.; Varnek, A.; Kuz’min, V., Structural and Physico-Chemical Interpretation (SPCI) of QSAR Models and Its Comparison with Matched Molecular Pair Analysis. J. Chem. Inf. Model. 2016, 56, 1455-1469 - http://dx.doi.org/10.1021/acs.jcim.6b00371 - integrated structural and physicochemical interpretation.
+3.	Matveieva, M.; Cronin, M. T. D.; Polishchuk, P., Interpretation of QSAR Models: Mining Structural Patterns Taking into Account Molecular Context. Molecular Informatics 2018, 38, 1800084. - https://doi.org/10.1002/minf.201800084 - context-dependent interpretation
